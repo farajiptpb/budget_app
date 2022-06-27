@@ -1,4 +1,5 @@
 class Category:
+
     def __init__(self, name, ledger=None):
         if ledger is None:
             ledger = []
@@ -10,6 +11,7 @@ class Category:
         dictionary['amount'] = amount
         dictionary['description'] = description
         self.ledger.append(dictionary)
+        return amount
 
     def withdraw(self, amount, description=''):
         dictionary = dict()
@@ -44,15 +46,38 @@ class Category:
         else:
             return False
 
+    def __str__(self):
+
+        stars_nums = 30 - len(self.name)
+        left_stars_nums = (stars_nums // 2)
+        right_stars_nums = (stars_nums - left_stars_nums)
+        left_stars = left_stars_nums * '*'
+        right_stars = right_stars_nums * '*'
+
+        text = f'{left_stars}Food{right_stars}'
+        index = 0
+        for dic in self.ledger:
+            amount = self.ledger[index]['amount']
+            amount = float(amount)
+            amount = str(amount)
+            if len(amount.split('.')[1]) < 2:
+                amount = amount + '0'
+            else:
+                amount = round(float(amount), 2)
+                amount = str(amount)
+            des = self.ledger[index]['description']
+            len_amount = len(amount[0:7])
+            len_descr = len(des[0:23])
+            len_white_space = (30 - len_descr - len_amount) * ' '
+
+            text = text + f"\n{des[0:23]}{len_white_space}{amount[0:7]}"
+            index = index + 1
+        text = text + f"\nTotal: {self.get_balance()}"
+        return text
+
 
 food = Category('food')
-clothing = Category('clothing')
-food.deposit(300, 'for meat')
-food.deposit(400, 'for rice')
-food.withdraw(40000, 'buy some rice and meat')
-food.transfer(200, clothing)
-print(food.withdraw(50))
-print(food.get_balance())
-print(clothing.check_funds(300))
-print(clothing.ledger)
-print(food.ledger)
+food.deposit(1000, 'rice and meat')
+food.withdraw(200, 'car')
+food.withdraw(200, 'bar')
+print(food)
