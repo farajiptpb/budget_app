@@ -76,8 +76,87 @@ class Category:
         return text
 
 
+def create_spend_chart():
+    pass
+
+
 food = Category('food')
+entertainment = Category('entertainment')
 food.deposit(1000, 'rice and meat')
 food.withdraw(200, 'car')
 food.withdraw(200, 'bar')
+food.transfer(100, entertainment)
 print(food)
+
+
+"""
+layer = ('o  ', '   ', '')
+lis = ['food', ]
+
+a = 4 - len(lis)
+for i in range(a):
+    lis.append('')
+
+print(lis)
+
+os_1 = []
+
+if lis[0] != '':
+    for index in range(4):
+        os_1.append('   ')
+    for index in range(7):
+        os_1.append('o  ')
+else:
+    for index in range(11):
+        os_1.append('')
+
+os_2 = []
+
+if lis[1] != '':
+    for index in range(4):
+        os_2.append('   ')
+    for index in range(7):
+        os_2.append('o  ')
+else:
+    for index in range(11):
+        os_2.append('')
+
+os_3 = []
+
+if lis[2] != '':
+    for index in range(4):
+        os_3.append('   ')
+    for index in range(7):
+        os_3.append('o  ')
+else:
+    for index in range(11):
+        os_3.append('')
+
+os_4 = []
+if lis[3] != '':
+    for index in range(4):
+        os_4.append('   ')
+    for index in range(7):
+        os_4.append('o  ')
+else:
+    for index in range(11):
+        os_4.append('')
+
+
+percentages = ['100|', ' 90|', ' 80|', ' 70|', ' 60|', ' 50|', ' 40|', ' 30|', ' 20|', ' 10|', '  0|']
+
+index = 0
+t = f""
+for i in percentages:
+    t = t + f"{i} {os_1[index]}{os_2[index]}{os_3[index]}{os_4[index]}\n"
+    index = index + 1
+
+print(t)
+
+
+def first_str_part():
+    pass
+
+
+
+"""
