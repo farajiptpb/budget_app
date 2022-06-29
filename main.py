@@ -76,9 +76,12 @@ class Category:
         return text
 
 
-def create_spend_chart(categories):
-    category_os = list()
+def o_number_calculator(categories):
+    """
+    This function return 'o's for each category needed for chart representation
+    """
 
+    category_os = list()
     withdraw = 0
     total_withdraw = 0
     for category in categories:
@@ -89,14 +92,20 @@ def create_spend_chart(categories):
         for dic in category.ledger:
             if dic['amount'] < 0:
                 withdraw = withdraw + dic['amount']
-        category_os.append(abs(int(10 * round((withdraw/total_withdraw), 2))))
+        category_os.append(abs(int(10 * round((withdraw / total_withdraw), 2))))
         withdraw = 0
-        deposit = 0
+    return category_os
+
+def percentage_part(categories, category_os):
+    """
+    This function creates percentage part of chart representation(upper part)
+    by creating 4 lists(maximum chats that can be represented) and each list contains 'o' and white spaces or
+    zero spaces ('')(when number of categories are less than 4)
+    """
     len_ctg = len(categories)
     a = 4 - len_ctg
     for i in range(a):
         categories.append('')
-
     os_1 = []
     if categories[0] != '':
         o_range = category_os[0]
@@ -107,7 +116,6 @@ def create_spend_chart(categories):
     else:
         for index in range(10):
             os_1.append('')
-
     os_2 = []
     if categories[1] != '':
         o_range = category_os[1]
@@ -118,7 +126,6 @@ def create_spend_chart(categories):
     else:
         for index in range(10):
             os_2.append('')
-
     os_3 = []
     if categories[2] != '':
         o_range = category_os[2]
@@ -129,7 +136,6 @@ def create_spend_chart(categories):
     else:
         for index in range(10):
             os_3.append('')
-
     os_4 = []
     if categories[3] != '':
         o_range = category_os[3]
@@ -140,43 +146,44 @@ def create_spend_chart(categories):
     else:
         for index in range(10):
             os_4.append('')
-
     percentages = ['100|', ' 90|', ' 80|', ' 70|', ' 60|', ' 50|', ' 40|', ' 30|', ' 20|', ' 10|']
     index = 0
     t = f"Percentage spent by category\n"
     for i in percentages:
         t = t + f"{i} {os_1[index]}{os_2[index]}{os_3[index]}{os_4[index]}\n"
         index = index + 1
+    return a, len_ctg, t
 
-    t = t + "  0| "
 
-    for i in range(len_ctg):
-        t = t + "o  "
+def name_part(a, categories):
+    """
+    This function creates percentage part of chart representation(lower part)
+    by creating 4 lists
+    each list contains the letters of each category name
+    length of lists are base on largest category name
+    for those categories that the length of their name are less than the largest name, their lists
+    will be filled by "  "
+    if number of categories were n (n<=4) then 4 - n  lists will be created that the length of them
+    is equal to the largest category name, and they will be  filled with ""(similar to percentage part)
 
-    dashes = (3 * len_ctg + 1)*'-'
-    t = t + '\n    ' + dashes
+    """
 
     categories_name = []
-
     for ctg in categories:
         if ctg != '':
             categories_name.append(ctg.name)
-
     for i in range(a):
         categories_name.append('')
     len_name = {}
     for name in categories_name:
         len_name[f"{name}"] = len(name)
-
     name_spells = {}
     for name in categories_name:
         spell = []
         for letter in name:
             spell.append(letter)
         name_spells[f"{name}"] = spell
-
     max_name_range = max(len_name.values())
-
     for name in name_spells.values():
 
         if name:
@@ -185,7 +192,6 @@ def create_spend_chart(categories):
         else:
             for i in range(max_name_range - len(name)):
                 name.append('')
-
     for name in name_spells.values():
 
         for l in name:
@@ -195,6 +201,23 @@ def create_spend_chart(categories):
                 name[name.index(l)] = f"{l}"
             else:
                 name[name.index(l)] = f"{l}  "
+    return categories_name, max_name_range, name_spells
+
+
+def create_spend_chart(categories):
+    category_os = o_number_calculator(categories)
+
+    a, len_ctg, t = percentage_part(categories, category_os)
+
+    t = t + "  0| "
+
+    for i in range(len_ctg):
+        t = t + "o  "
+
+    dashes = (3 * len_ctg + 1)*'-'
+    t = t + '\n    ' + dashes
+
+    categories_name, max_name_range, name_spells = name_part(a, categories)
     first = name_spells[categories_name[0]]
     first[0] = first[0].title()
     second = name_spells[categories_name[1]]
@@ -213,21 +236,4 @@ def create_spend_chart(categories):
 
         t = t + f"     {first[i]}{second[i]}{third[i]}{fourth[i]}{br}"
 
-    print(t)
-food = Category('food')
-entertainment = Category('entertainment')
-business = Category('business')
-
-food.deposit(900, 'rice and meat')
-entertainment.deposit(900, "deposit")
-business.deposit(900, "deposit")
-food.withdraw(105.55)
-entertainment.withdraw(33.40)
-business.withdraw(10.99)
-
-categories = []
-categories.append(business)
-categories.append(food)
-#categories.append(entertainment)
-
-create_spend_chart(categories)
+    return t
